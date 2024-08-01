@@ -22,7 +22,4 @@ class UserDetailUpdateView(generics.RetrieveUpdateAPIView):
         if self.request.user != serializer.instance:
             raise PermissionDenied("You don't have permission to edit this user")
         serializer.save()
-        
-class CustomTokenObtainPairView(TokenObtainPairView):
-    serializer_class = CustomTokenObtainPairSerializer
     
