@@ -1,3 +1,4 @@
+<<<<<<< HEAD
 amqp==5.2.0
 asgiref==3.8.1
 billiard==4.2.0
@@ -25,3 +26,14 @@ tzdata==2024.1
 urllib3==2.2.1
 vine==5.1.0
 wcwidth==0.2.13
+=======
+asgiref==3.8.1
+Django==5.0.7
+django-cors-headers==4.4.0
+djangorestframework==3.15.2
+djangorestframework-simplejwt==5.3.1
+pillow==10.4.0
+psycopg2-binary==2.9.9
+PyJWT==2.8.0
+sqlparse==0.5.1
+>>>>>>> a0317d6fe8e2b5e7fe9f1b11e4fb6841eb16606e
