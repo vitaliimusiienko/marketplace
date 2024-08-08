@@ -8,4 +8,10 @@ class CustomUser(AbstractUser):
     
     def __str__(self):
         return self.username
+    
+class SellerProfile(models.Model):
+    user = models.ForeignKey(CustomUser, on_delete=models.CASCADE)
+    
+    def __str__(self):
+        return self.user.first_name
 

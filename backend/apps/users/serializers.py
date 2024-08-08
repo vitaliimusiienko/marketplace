@@ -1,7 +1,8 @@
 from rest_framework import serializers
 from django.contrib.auth.password_validation import validate_password
 from rest_framework.validators import UniqueValidator
-from .models import CustomUser
+from .models import CustomUser, SellerProfile
+from apps.reviews.serializers import SellerReviewSerializer
 
 class RegisterSerializer(serializers.ModelSerializer):
     email = serializers.EmailField(
@@ -43,3 +44,10 @@ class CustomUserSerializer(serializers.ModelSerializer):
 class LoginSerializer(serializers.Serializer):
     username = serializers.CharField()
     password = serializers.CharField()
+    
+class SellerSerializer(serializers.ModelSerializer):
+    reviews = SellerReviewSerializer(many=True, read_only=True)
+    
+    class Meta:
+        model = SellerProfile
+        fields = ['id', 'user', 'reviews']

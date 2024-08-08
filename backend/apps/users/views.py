@@ -1,10 +1,10 @@
-from rest_framework import generics, permissions, status
+from rest_framework import generics, permissions, status, viewsets
 from rest_framework.response import Response
 from rest_framework.decorators import api_view
 from rest_framework.authtoken.models import Token
 from django.contrib.auth import authenticate
-from .models import CustomUser
-from .serializers import CustomUserSerializer, RegisterSerializer, LoginSerializer
+from .models import CustomUser, SellerProfile
+from .serializers import CustomUserSerializer, RegisterSerializer, LoginSerializer, SellerSerializer
 
 @api_view(['POST'])
 def register_user(request):
@@ -46,3 +46,8 @@ class UserUpdateView(generics.UpdateAPIView):
 
     def get_object(self):
         return self.request.user
+    
+class SellerViewSet(viewsets.ModelViewSet):
+    queryset = SellerProfile
+    serializer_class = SellerSerializer
+    permission_classes = [permissions.IsAuthenticatedOrReadOnly]

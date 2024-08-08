@@ -1,13 +1,12 @@
-from rest_framework import generics
-from rest_framework.permissions import IsAuthenticated, IsAdminUser
+from rest_framework import generics, viewsets, permissions
 from rest_framework.exceptions import PermissionDenied
 from .serializers import ProductSerializer
 from .models import Product
 
-class ProductListView(generics.ListCreateAPIView):
+class ProductViewsSet(viewsets.ModelViewSet):
     queryset = Product.objects.all()
     serializer_class = ProductSerializer
-    permission_classes = [IsAuthenticated]
+    permission_classes = [permissions.IsAuthenticatedOrReadOnly]
     
     def perform_create(self, serializer):
         if self.request.user.is_staff:
@@ -18,4 +17,4 @@ class ProductListView(generics.ListCreateAPIView):
 class ProductDetailView(generics.RetrieveUpdateAPIView):
     queryset = Product.objects.all()
     serializer_class = ProductSerializer
-    permission_classes = [IsAuthenticated, IsAdminUser]
+    permission_classes = [permissions.IsAuthenticated, permissions.IsAdminUser]
