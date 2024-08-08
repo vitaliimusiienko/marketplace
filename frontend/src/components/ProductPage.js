@@ -1,42 +1,66 @@
+
 import React, { useEffect, useState } from 'react';
 import axios from 'axios';
-import ReviewForm from './ReviewForm';
-import '../styles/ProductPage.css';
 
-const ProductPage = ({ match }) => {
-    const [product, setProduct] = useState(null);
+function ProductPage() {
+    const [categories, setCategories] = useState([]);
 
     useEffect(() => {
-        const fetchProduct = async () => {
-            try {
-                const response = await axios.get(`http://localhost:8000/api/products/${match.params.id}/`);
-                setProduct(response.data);
-            } catch (error) {
-                console.error('There was an error!', error);
-            }
-        };
-
-        fetchProduct();
-    }, [match.params.id]);
-
-    if (!product) return <div>Loading...</div>;
+        axios.get('http://localhost:8000/api/categories/')
+            .then(response => setCategories(response.data))
+            .catch(error => console.error('Error fetching categories:', error));
+    }, []);
 
     return (
-        <div className="product-container">
-            <h2>{product.name}</h2>
-            <p>{product.description}</p>
-            <p>Price: ${product.price}</p>
-            <h3>Reviews:</h3>
-            {product.reviews.map((review) => (
-                <div key={review.id} className="review">
-                    <p><strong>{review.user}</strong></p>
-                    <p>Rating: {review.rating}</p>
-                    <p>{review.comment}</p>
+        <div>
+            <h2>Products by Category</h2>
+            {categories.map(category => (
+                <div key={category.id}>
+                    <h3>{category.name}</h3>
+                    <ProductList categoryId={category.id} />
                 </div>
             ))}
-            <ReviewForm productId={product.id} />
         </div>
     );
-};
+}
+
+function ProductList({ categoryId }) {
+    const [products, setProducts] = useState([]);
+
+    useEffect(() => {
+        axios.get(`http://localhost:8000/api/products/?category=${categoryId}`)
+            .then(response => setProducts(response.data))
+            .catch(error => console.error('Error fetching products:', error));
+    }, [categoryId]);
+
+    return (
+        <div>
+            {products.map(product => (
+                <div key={product.id} className="product">
+                    <h4>{product.name}</h4>
+                    <p>{product.description}</p>
+                    <p>${product.price}</p>
+                    {product.image && <img src={`http://localhost:8000${product.image}`} alt={product.name} />}
+                    <div>
+                        <h5>Reviews:</h5>
+                        {product.reviews.length > 0 ? (
+                            <ul>
+                                {product.reviews.map((review, index) => (
+                                    <li key={index}>
+                                        <p><strong>{review.user}</strong> ({review.rating} stars)</p>
+                                        <p>{review.comment}</p>
+                                        <p><em>Posted on {new Date(review.created_at).toLocaleDateString()}</em></p>
+                                    </li>
+                                ))}
+                            </ul>
+                        ) : (
+                            <p>No reviews yet.</p>
+                        )}
+                    </div>
+                </div>
+            ))}
+        </div>
+    );
+}
 
 export default ProductPage;

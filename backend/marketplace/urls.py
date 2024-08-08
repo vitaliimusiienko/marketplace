@@ -7,4 +7,6 @@ urlpatterns = [
     path('api_auth/', include('rest_framework.urls')),
     path('api_token_auth/', drf_views.obtain_auth_token),
     path('api/', include('apps.users.urls')),
+    path('api/', include('apps.products.urls')),
+    # path('api/', include('apps.reviews.urls')),
 ]

@@ -32,17 +32,36 @@ nav li {
   margin-left: 20px;
 }
 
-nav a, nav button {
-  color: #61dafb;
-  text-decoration: none;
+.auth-button {
   background: none;
   border: none;
+  color: #61dafb;
   cursor: pointer;
   font-size: 16px;
+  padding: 10px 15px;
+  border-radius: 4px;
+  text-decoration: none;
+  transition: background-color 0.3s ease;
 }
 
-nav a:hover, nav button:hover {
-  text-decoration: underline;
+.auth-button:hover {
+  background-color: #333;
+}
+
+.logout-button {
+  background-color: #555;
+}
+
+.logout-button:hover {
+  background-color: #444;
+}
+
+.register-button, .login-button {
+  background-color: #444;
+}
+
+.register-button:hover, .login-button:hover {
+  background-color: #333;
 }
 
 /* Стили для главного контента */
@@ -54,7 +73,7 @@ main {
   padding: 20px;
 }
 
-.card {
+.categories {
   background-color: #444;
   border-radius: 8px;
   padding: 20px;
@@ -63,13 +82,33 @@ main {
   box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
 }
 
-.card-title {
+.categories-title {
   font-size: 28px;
   margin-bottom: 10px;
 }
 
-.card-description {
-  font-size: 16px;
+.categories-list {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 10px;
+}
+
+.category-item {
+  background-color: #555;
+  border-radius: 8px;
+  padding: 10px;
+  text-align: center;
+  flex: 1 1 calc(33.333% - 10px); /* Для трех колонок с отступами */
+}
+
+.category-item a {
+  color: #61dafb;
+  text-decoration: none;
+  font-size: 18px;
+}
+
+.category-item a:hover {
+  text-decoration: underline;
 }
 
 /* Стили для подвала */
@@ -78,19 +117,4 @@ footer {
   padding: 10px;
   text-align: center;
   color: #aaa;
-}
-
-/* Стили для кнопки выхода */
-.logout-button {
-  color: #fff;
-  background-color: #d32f2f; /* Красный цвет для кнопки выхода */
-  padding: 8px 16px;
-  border-radius: 4px;
-  border: none;
-  cursor: pointer;
-  transition: background-color 0.3s ease;
-}
-
-.logout-button:hover {
-  background-color: #b71c1c;
 }
