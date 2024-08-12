@@ -4,13 +4,11 @@ from rest_framework.response import Response
 from rest_framework.decorators import action
 from .models import Product, Category
 from .serializers import ProductSerializer, CategorySerializer
-from .permissions import IsStaffOrReadOnly
 from apps.reviews.serializers import ProductReviewSerializer
 
 class ProductViewSet(viewsets.ModelViewSet):
     queryset = Product.objects.all()
     serializer_class = ProductSerializer
-    permission_classes = [IsStaffOrReadOnly]
     
     @action(detail=True, methods=['get'])
     def reviews(self, request, pk=None):

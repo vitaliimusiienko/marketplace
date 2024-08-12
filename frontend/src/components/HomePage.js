@@ -6,15 +6,14 @@ import '../styles/HomePage.css';
 function HomePage() {
   const [isAuthenticated, setIsAuthenticated] = useState(false);
   const [categories, setCategories] = useState([]);
-
+  
   useEffect(() => {
     const token = localStorage.getItem('token');
     setIsAuthenticated(!!token);
 
-    // Загрузка категорий
     const fetchCategories = async () => {
       try {
-        const response = await axios.get('http://localhost:8000/api/categories/'); // Адрес вашего API для категорий
+        const response = await axios.get('http://localhost:8000/api/categories/');
         setCategories(response.data);
       } catch (error) {
         console.error('Error fetching categories:', error);
@@ -38,13 +37,13 @@ function HomePage() {
           <ul>
             {isAuthenticated ? (
               <>
-                <li><Link to="/add-product" className="auth-button add-product-button">Add Product</Link></li>
-                <li><button onClick={handleLogout} className="auth-button logout-button">Logout</button></li>
+                <li><Link to="/update" className="update-button">Update Info</Link></li>
+                <li><button onClick={handleLogout} className="logout-button">Logout</button></li>
               </>
             ) : (
               <>
-                <li><Link to="/register" className="auth-button register-button">Register</Link></li>
-                <li><Link to="/login" className="auth-button login-button">Login</Link></li>
+                <li><Link to="/register">Register</Link></li>
+                <li><Link to="/login">Login</Link></li>
               </>
             )}
           </ul>
@@ -54,13 +53,20 @@ function HomePage() {
         <div className="categories">
           <h2 className="categories-title">Product Categories</h2>
           <div className="categories-list">
-            {categories.map(category => (
-              <div key={category.id} className="category-item">
-                <Link to={`/products?category=${category.id}`}>{category.name}</Link>
-              </div>
-            ))}
+            {categories.length > 0 ? (
+              categories.map(category => (
+                <Link key={category.id} to={`/products?category=${category.id}`} className="category-button">
+                  {category.name}
+                </Link>
+              ))
+            ) : (
+              <p>No categories available.</p>
+            )}
           </div>
         </div>
+        {isAuthenticated && (
+          <Link to="/add-product" className="add-product-button">Add Product</Link>
+        )}
       </main>
       <footer>
         &copy; 2024 Marketplace

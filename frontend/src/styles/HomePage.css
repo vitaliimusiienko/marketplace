@@ -7,7 +7,6 @@
   flex-direction: column;
 }
 
-/* Стили заголовка */
 header {
   background-color: #444;
   padding: 20px;
@@ -26,89 +25,76 @@ nav ul {
   margin: 0;
   padding: 0;
   display: flex;
+  gap: 10px;
 }
 
 nav li {
-  margin-left: 20px;
+  display: flex;
+  align-items: center;
 }
 
-.auth-button {
-  background: none;
+nav a, nav button {
+  color: #f0f0f0;
+  background-color: #555;
+  text-decoration: none;
+  padding: 8px 16px;
+  border-radius: 4px;
   border: none;
-  color: #61dafb;
   cursor: pointer;
   font-size: 16px;
-  padding: 10px 15px;
-  border-radius: 4px;
-  text-decoration: none;
   transition: background-color 0.3s ease;
 }
 
-.auth-button:hover {
-  background-color: #333;
-}
-
-.logout-button {
-  background-color: #555;
-}
-
-.logout-button:hover {
+nav a:hover, nav button:hover {
   background-color: #444;
 }
 
-.register-button, .login-button {
-  background-color: #444;
-}
-
-.register-button:hover, .login-button:hover {
-  background-color: #333;
-}
-
-/* Стили для главного контента */
 main {
   flex: 1;
   display: flex;
+  flex-direction: column;
   justify-content: center;
   align-items: center;
   padding: 20px;
 }
 
 .categories {
-  background-color: #444;
-  border-radius: 8px;
-  padding: 20px;
-  max-width: 600px;
-  width: 100%;
-  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+  text-align: center;
+  margin-bottom: 20px;
 }
 
 .categories-title {
-  font-size: 28px;
-  margin-bottom: 10px;
+  font-size: 24px;
+  margin-bottom: 20px;
 }
 
 .categories-list {
   display: flex;
-  flex-wrap: wrap;
+  flex-direction: column;
+  align-items: center;
   gap: 10px;
-}
-
-.category-item {
-  background-color: #555;
+  padding: 20px;
+  background-color: #444;
+  border: 2px solid #444;
   border-radius: 8px;
-  padding: 10px;
-  text-align: center;
-  flex: 1 1 calc(33.333% - 10px); /* Для трех колонок с отступами */
 }
 
-.category-item a {
-  color: #61dafb;
+.category-button {
+  background-color: #555;
+  color: #f0f0f0;
   text-decoration: none;
-  font-size: 18px;
+  padding: 8px 16px;
+  border-radius: 4px;
+  border: 2px solid #444;
+  cursor: pointer;
+  font-size: 16px;
+  transition: background-color 0.3s ease;
+  width: 100%;
+  text-align: center;
 }
 
-.category-item a:hover {
-  text-decoration: underline;
+.category-button:hover {
+  background-color: #444;
 }
 
 /* Стили для подвала */
@@ -117,4 +103,40 @@ footer {
   padding: 10px;
   text-align: center;
   color: #aaa;
+}
+
+.logout-button, .update-button {
+  background-color: #555;
+  color: #f0f0f0;
+  padding: 8px 16px;
+  border-radius: 4px;
+  border: none;
+  cursor: pointer;
+  font-size: 16px;
+  transition: background-color 0.3s ease;
+  text-decoration: none;
+  display: inline-block;
+}
+
+.logout-button:hover, .update-button:hover {
+  background-color: #444;
+}
+
+.add-product-button {
+  position: fixed;
+  bottom: 20px;
+  right: 20px;
+  background-color: #555;
+  color: #f0f0f0;
+  padding: 12px 20px;
+  border-radius: 50px;
+  border: none;
+  cursor: pointer;
+  font-size: 16px;
+  transition: background-color 0.3s ease;
+  text-decoration: none;
+}
+
+.add-product-button:hover {
+  background-color: #444;
 }
