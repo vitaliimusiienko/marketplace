@@ -1,4 +1,5 @@
 from django.db import models
+from apps.users.models import SellerProfile
    
 class Category(models.Model):
     name = models.CharField(max_length=255)
@@ -9,6 +10,7 @@ class Category(models.Model):
 class Product(models.Model):
     name = models.CharField(max_length=255)
     description = models.TextField()
+    seller = models.ForeignKey(SellerProfile, verbose_name='seller', on_delete=models.CASCADE, null=True, blank=True)
     price = models.DecimalField(max_digits=10, decimal_places=2)
     category = models.ForeignKey(Category, on_delete=models.SET_NULL, null=True, blank=True)
     article = models.IntegerField(default=0)
