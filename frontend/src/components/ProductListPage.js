@@ -7,7 +7,8 @@ function ProductListPage() {
   const [searchParams] = useSearchParams();
   const categoryId = searchParams.get('category');
   const [products, setProducts] = useState([]);
-  
+  const [error, setError] = useState('');
+
   useEffect(() => {
     const fetchProducts = async () => {
       try {
@@ -15,8 +16,10 @@ function ProductListPage() {
           params: { category: categoryId }
         });
         setProducts(response.data);
+        setError('');
       } catch (error) {
         console.error('Error fetching products:', error);
+        setError('Error fetching products. Please try again later.');
       }
     };
 
@@ -26,6 +29,7 @@ function ProductListPage() {
   return (
     <div className="product-list-container">
       <h2 className="product-list-title">Products</h2>
+      {error && <p className="error-message">{error}</p>}
       <div className="product-list">
         {products.length > 0 ? (
           products.map(product => (

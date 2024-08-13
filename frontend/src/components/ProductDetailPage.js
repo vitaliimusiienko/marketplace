@@ -7,10 +7,15 @@ function ProductDetailPage() {
   const { productId } = useParams();
   const [product, setProduct] = useState(null);
   const [currentUser, setCurrentUser] = useState('');
-  const [newReview, setNewReview] = useState({
+  const [newProductReview, setNewProductReview] = useState({
     rating: '',
     text: ''
   });
+  const [newSellerReview, setNewSellerReview] = useState({
+    rating: '',
+    text: ''
+  });
+  const [reviewSubmitted, setReviewSubmitted] = useState(false);
 
   useEffect(() => {
     const fetchProduct = async () => {
@@ -40,32 +45,63 @@ function ProductDetailPage() {
     fetchCurrentUser();
   }, [productId]);
 
-  const handleChange = (e) => {
+  const handleProductReviewChange = (e) => {
     const { name, value } = e.target;
-    setNewReview({
-      ...newReview,
+    setNewProductReview({
+      ...newProductReview,
       [name]: value
     });
   };
 
-  const handleSubmit = async (e) => {
+  const handleSellerReviewChange = (e) => {
+    const { name, value } = e.target;
+    setNewSellerReview({
+      ...newSellerReview,
+      [name]: value
+    });
+  };
+
+  const handleProductReviewSubmit = async (e) => {
     e.preventDefault();
     try {
       const token = localStorage.getItem('token');
       await axios.post(`http://localhost:8000/api/products/${productId}/reviews/`, {
-        ...newReview,
+        ...newProductReview,
         author: currentUser
       }, {
         headers: {
           'Authorization': `Bearer ${token}`
         }
       });
-      setNewReview({ rating: '', text: '' });
+      setNewProductReview({ rating: '', text: '' });
       const response = await axios.get(`http://localhost:8000/api/products/${productId}/`);
       setProduct(response.data);
     } catch (error) {
-      console.error('Error submitting review:', error);
+      console.error('Error submitting product review:', error);
     }
+  };
+
+  const handleSellerReviewSubmit = async (e) => {
+    e.preventDefault();
+    try {
+      const token = localStorage.getItem('token');
+      await axios.post(`http://localhost:8000/api/products/${productId}/seller-review/`, {
+        ...newSellerReview
+      }, {
+        headers: {
+          'Authorization': `Bearer ${token}`
+        }
+      });
+      setNewSellerReview({ rating: '', text: '' });
+      setReviewSubmitted(true);
+    } catch (error) {
+      console.error('Error submitting seller review:', error);
+    }
+  };
+
+  const handlePurchase = async () => {
+    alert('Purchase successful! Please provide a review for the seller.');
+    setReviewSubmitted(false);
   };
 
   return (
@@ -80,9 +116,9 @@ function ProductDetailPage() {
             <h2 className="product-detail-title">{product.name}</h2>
             <p className="product-detail-description">{product.description}</p>
             <p className="product-detail-price">${product.price}</p>
-            <button className="product-detail-button">Add to Cart</button>
+            <button className="product-detail-button" onClick={handlePurchase}>Buy Now</button>
             <div className="product-reviews">
-              <h3>Reviews</h3>
+              <h3>Product Reviews</h3>
               {product.reviews && product.reviews.length > 0 ? (
                 <ul className="review-list">
                   {product.reviews.map(review => (
@@ -95,17 +131,17 @@ function ProductDetailPage() {
               ) : (
                 <p>No reviews for this product yet.</p>
               )}
-              {currentUser && (
-                <form onSubmit={handleSubmit} className="review-form">
-                  <h4>Create Review</h4>
+              {currentUser && !reviewSubmitted && (
+                <form onSubmit={handleProductReviewSubmit} className="review-form">
+                  <h4>Leave a Review for the Product</h4>
                   <div className="form-group">
                     <label htmlFor="rating">Stars (1-5):</label>
                     <input
                       type="number"
                       id="rating"
                       name="rating"
-                      value={newReview.rating}
-                      onChange={handleChange}
+                      value={newProductReview.rating}
+                      onChange={handleProductReviewChange}
                       min="1"
                       max="5"
                       required
@@ -116,13 +152,45 @@ function ProductDetailPage() {
                     <textarea
                       id="text"
                       name="text"
-                      value={newReview.text}
-                      onChange={handleChange}
+                      value={newProductReview.text}
+                      onChange={handleProductReviewChange}
                       required
                     />
                   </div>
-                  <button type="submit" className="submit-review-button">Create Review</button>
+                  <button type="submit" className="submit-review-button">Submit Review</button>
                 </form>
+              )}
+              {currentUser && !reviewSubmitted && (
+                <form onSubmit={handleSellerReviewSubmit} className="review-form">
+                  <h4>Leave a Review for the Seller</h4>
+                  <div className="form-group">
+                    <label htmlFor="rating">Stars (1-5):</label>
+                    <input
+                      type="number"
+                      id="rating"
+                      name="rating"
+                      value={newSellerReview.rating}
+                      onChange={handleSellerReviewChange}
+                      min="1"
+                      max="5"
+                      required
+                    />
+                  </div>
+                  <div className="form-group">
+                    <label htmlFor="text">Review:</label>
+                    <textarea
+                      id="text"
+                      name="text"
+                      value={newSellerReview.text}
+                      onChange={handleSellerReviewChange}
+                      required
+                    />
+                  </div>
+                  <button type="submit" className="submit-review-button">Submit Review</button>
+                </form>
+              )}
+              {reviewSubmitted && (
+                <p>Thank you for your review!</p>
               )}
             </div>
           </div>

@@ -8,37 +8,48 @@ from rest_framework.permissions import IsAuthenticated
 from django.contrib.auth import authenticate
 from .models import CustomUser, SellerProfile
 from .serializers import CustomUserSerializer, RegisterSerializer, LoginSerializer
+from rest_framework_simplejwt.tokens import RefreshToken
 
 @api_view(['POST'])
 def register_user(request):
     serializer = RegisterSerializer(data=request.data)
     if serializer.is_valid():
         user = serializer.save()
-        return Response({'message': 'User registered successfully', 'user': CustomUserSerializer(user).data}, status=201)
+        refresh = RefreshToken.for_user(user)
+        access_token = str(refresh.access_token)
+
+        return Response({
+            'message': 'User registered successfully',
+            'user': CustomUserSerializer(user).data,
+            'refresh': str(refresh),
+            'access': access_token
+        }, status=201)
     return Response(serializer.errors, status=400)
 
 @api_view(['POST'])
 def login_user(request):
-    serializer = LoginSerializer(data=request.data)
-    if serializer.is_valid():
-        username = serializer.validated_data['username']
-        password = serializer.validated_data['password']
-        user = authenticate(username=username, password=password)
-        if user is not None:
-            token, created = Token.objects.get_or_create(user=user)
-            return Response({'token': token.key})
-        return Response({'error': 'Invalid credentials'}, status=400)
-    return Response(serializer.errors, status=400)
+    username = request.data.get('username')
+    password = request.data.get('password')
+    user = authenticate(username=username, password=password)
+
+    if user is not None:
+        refresh = RefreshToken.for_user(user)
+        return Response({
+            'refresh': str(refresh),
+            'access': str(refresh.access_token),
+        })
+    else:
+        return Response({'detail': 'Invalid credentials'}, status=401)
 
 @api_view(['POST'])
 def logout_user(request):
     try:
-        token = request.auth
-        if token:
-            Token.objects.filter(key=token.key).delete()
-            return Response({'message':'Successfully logged out'},
-                            status=status.HTTP_200_OK)
-        return Response({'error': 'No active session found'}, status=status.HTTP_400_BAD_REQUEST)
+        refresh_token = request.data.get("refresh_token")
+        if refresh_token:
+            token = RefreshToken(refresh_token)
+            token.blacklist()
+            return Response({'message': 'Successfully logged out'}, status=status.HTTP_200_OK)
+        return Response({'error': 'No refresh token provided'}, status=status.HTTP_400_BAD_REQUEST)
     except Exception as e:
         return Response({'error': str(e)}, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
 
@@ -54,8 +65,6 @@ class CurrentUserView(APIView):
     permission_classes = [IsAuthenticated]
     
     def get(self, request):
-        token = request.auth
         user = request.user
-        return Response({
-            'username': user.username
-        })
+        serializer = CustomUserSerializer(user)
+        return Response(serializer.data)

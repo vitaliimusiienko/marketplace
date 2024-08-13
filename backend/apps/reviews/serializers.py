@@ -11,7 +11,9 @@ class ProductReviewSerializer(serializers.ModelSerializer):
 class SellerReviewSerializer(serializers.ModelSerializer):
     class Meta:
         model = SellerReview
-        fields = '__all__'
+        fields = ['id', 'user', 'seller', 'rating', 'comment', 'created_at']
+        read_only_fields = ['id', 'user', 'seller', 'created_at']
+        
         
     
     

@@ -1,0 +1,27 @@
+.recommendation-list-container {
+  background-color: #333;
+  color: #f0f0f0;
+  font-family: Arial, sans-serif;
+  padding: 20px;
+}
+
+.recommendation-list {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 20px;
+}
+
+.recommendation-item {
+  background-color: #444;
+  padding: 20px;
+  border-radius: 8px;
+  max-width: 200px;
+  text-align: center;
+}
+
+.recommendation-image {
+  display: block;
+  max-width: 100%;
+  height: auto;
+  border-radius: 8px;
+}

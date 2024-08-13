@@ -150,3 +150,54 @@
 .submit-review-button:hover {
   background-color: #444;
 }
+
+.success-message {
+  background-color: #4CAF50;
+  color: #fff;
+  padding: 15px;
+  border-radius: 4px;
+  margin-top: 20px;
+  text-align: center;
+  font-size: 18px;
+}
+
+.review-popup {
+  background-color: #444;
+  padding: 20px;
+  border-radius: 8px;
+  max-width: 500px;
+  width: 100%;
+  margin: 20px auto;
+  position: relative;
+}
+
+.review-popup h4 {
+  font-size: 20px;
+  margin-bottom: 10px;
+}
+
+.review-popup button {
+  background-color: #555;
+  color: #f0f0f0;
+  border: none;
+  padding: 10px 20px;
+  border-radius: 4px;
+  cursor: pointer;
+  font-size: 16px;
+  transition: background-color 0.3s ease;
+}
+
+.review-popup button:hover {
+  background-color: #444;
+}
+
+.review-popup .close-button {
+  position: absolute;
+  top: 10px;
+  right: 10px;
+  background: none;
+  border: none;
+  color: #f0f0f0;
+  font-size: 20px;
+  cursor: pointer;
+}

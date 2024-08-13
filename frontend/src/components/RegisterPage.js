@@ -26,16 +26,18 @@ const RegisterPage = () => {
             const response = await axios.post('http://localhost:8000/api/register/', {
                 username,
                 password,
-                password2: confirmPassword,
                 email,
                 first_name: firstName,
                 last_name: lastName
             });
-
-            localStorage.setItem('token', response.data.token);
+            if (response.data.token) {
+                localStorage.setItem('token', response.data.token);
+            }
+            
             navigate('/');
         } catch (error) {
-            setError('Registration failed. Please check your data and try again.');
+            const errMessage = error.response?.data?.detail || 'Registration failed. Please check your data and try again.';
+            setError(errMessage);
         }
     };
 
