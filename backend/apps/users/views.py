@@ -1,10 +1,13 @@
 from rest_framework import generics, permissions, status, viewsets
+from rest_framework.views import APIView
 from rest_framework.response import Response
 from rest_framework.decorators import api_view
 from rest_framework.authtoken.models import Token
+from rest_framework.authentication import TokenAuthentication
+from rest_framework.permissions import IsAuthenticated
 from django.contrib.auth import authenticate
 from .models import CustomUser, SellerProfile
-from .serializers import CustomUserSerializer, RegisterSerializer, LoginSerializer, SellerSerializer
+from .serializers import CustomUserSerializer, RegisterSerializer, LoginSerializer
 
 @api_view(['POST'])
 def register_user(request):
@@ -42,12 +45,17 @@ def logout_user(request):
 class UserUpdateView(generics.UpdateAPIView):
     queryset = CustomUser.objects.all()
     serializer_class = CustomUserSerializer
-    permission_classes = [permissions.IsAuthenticated]
+    permission_classes = [IsAuthenticated]
 
     def get_object(self):
         return self.request.user
     
-class SellerViewSet(viewsets.ModelViewSet):
-    queryset = SellerProfile
-    serializer_class = SellerSerializer
-    permission_classes = [permissions.IsAuthenticatedOrReadOnly]
+class CurrentUserView(APIView):
+    permission_classes = [IsAuthenticated]
+    
+    def get(self, request):
+        token = request.auth
+        user = request.user
+        return Response({
+            'username': user.username
+        })

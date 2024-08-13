@@ -1,21 +1,12 @@
-from django.shortcuts import render
-from rest_framework import viewsets, permissions
-from .models import ProductReview, SellerReview
-from .serializers import ProductReviewSerializer, SellerReviewSerializer
+from rest_framework import generics, permissions
+from .models import ProductReview
+from .serializers import ProductReviewSerializer
 
-class ProductReviewViewSet(viewsets.ModelViewSet):
-    queryset = ProductReview
-    serializer_class = ProductReviewSerializer
-    permission_classes = [permissions.IsAuthenticatedOrReadOnly]
+class ProductReviewListCreateView(generics.ListCreateAPIView):
+    def get_queryset(self):
+        product_id = self.kwargs['product_id']
+        return ProductReview.objects.filter(product_id=product_id).order_by('-created_at')
     
     def perform_create(self, serializer):
-        serializer.save(user = self.request.user)
-    
-class SellerReviewViewSet(viewsets.ModelViewSet):
-    queryset = SellerReview
-    serializer_class = SellerReviewSerializer
-    permission_classes = [permissions.IsAuthenticatedOrReadOnly]
-    
-    def perform_create(self, serializer):
-        serializer.save(user = self.request.user)
+        serializer.save(user=request.user, product_id=self.kwargs['product_id'])
     

@@ -1,17 +1,19 @@
 import React, { useState } from 'react';
 import axios from 'axios';
 import '../styles/LoginPage.css';
+import { useNavigate } from 'react-router-dom';
 
 function LoginPage() {
   const [username, setUsername] = useState('');
   const [password, setPassword] = useState('');
+  const navigate = useNavigate();
 
   const handleSubmit = async (e) => {
     e.preventDefault();
     try {
       const response = await axios.post('http://localhost:8000/api/login/', { username, password });
       localStorage.setItem('token', response.data.token);
-      window.location.reload();
+      navigate('/');
     } catch (error) {
       console.error('There was an error!', error);
       alert('Login failed');
@@ -24,11 +26,21 @@ function LoginPage() {
       <form onSubmit={handleSubmit} className="auth-form">
         <div>
           <label>Username:</label>
-          <input type="text" value={username} onChange={(e) => setUsername(e.target.value)} required />
+          <input 
+            type="text" 
+            value={username} 
+            onChange={(e) => setUsername(e.target.value)} 
+            required 
+          />
         </div>
         <div>
           <label>Password:</label>
-          <input type="password" value={password} onChange={(e) => setPassword(e.target.value)} required />
+          <input 
+            type="password" 
+            value={password} 
+            onChange={(e) => setPassword(e.target.value)} 
+            required 
+          />
         </div>
         <button type="submit">Login</button>
       </form>

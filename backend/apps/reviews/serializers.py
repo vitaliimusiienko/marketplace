@@ -1,19 +1,17 @@
 from rest_framework import serializers
-from .models import SellerReview, ProductReview
+from .models import ProductReview, SellerReview
 
 
-class ProductReviewSerializer(serializers.ModelSerializer):
-    user = serializers.ReadOnlyField(source='user.username')
-    
+class ProductReviewSerializer(serializers.ModelSerializer):  
     class Meta:
         model = ProductReview
         fields = ['id', 'user', 'product', 'rating', 'comment', 'created_at']
+        read_only_fields = ['id', 'user', 'product', 'created_at']
         
 class SellerReviewSerializer(serializers.ModelSerializer):
-    user = serializers.ReadOnlyField(source='user.username')
-    
     class Meta:
         model = SellerReview
-        fields = ['id', 'user', 'seller', 'rating', 'comment', 'created_at']
+        fields = '__all__'
+        
     
     
