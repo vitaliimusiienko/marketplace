@@ -1,4 +1,4 @@
-.recommendation-list-container {
+recommendation-list-container {
   background-color: #333;
   color: #f0f0f0;
   font-family: Arial, sans-serif;
@@ -9,6 +9,7 @@
   display: flex;
   flex-wrap: wrap;
   gap: 20px;
+  justify-content: center;
 }
 
 .recommendation-item {
@@ -17,6 +18,11 @@
   border-radius: 8px;
   max-width: 200px;
   text-align: center;
+  transition: transform 0.3s ease;
+}
+
+.recommendation-item:hover {
+  transform: scale(1.05);
 }
 
 .recommendation-image {
@@ -24,4 +30,14 @@
   max-width: 100%;
   height: auto;
   border-radius: 8px;
+}
+
+.recommendation-item h3 {
+  font-size: 18px;
+  margin: 10px 0;
+}
+
+.recommendation-item p {
+  font-size: 16px;
+  margin: 5px 0;
 }

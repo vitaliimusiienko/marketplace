@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import axios from 'axios';
-import '../styles/RecommendationListPage.css';
+import { Link } from 'react-router-dom';
+import '../styles/RecommendationListPage.css'; // Стили для плиток
 
 function RecommendationListPage() {
   const [recommendations, setRecommendations] = useState([]);
@@ -25,9 +26,11 @@ function RecommendationListPage() {
         {recommendations.length > 0 ? (
           recommendations.map(product => (
             <div key={product.id} className="recommendation-item">
-              <img src={product.image} alt={product.name} className="recommendation-image" />
-              <h3>{product.name}</h3>
-              <p>${product.price}</p>
+              <Link to={`/products/${product.id}`}>
+                <img src={product.image} alt={product.name} className="recommendation-image" />
+                <h3>{product.name}</h3>
+                <p>${product.price}</p>
+              </Link>
             </div>
           ))
         ) : (

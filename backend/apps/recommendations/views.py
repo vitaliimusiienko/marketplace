@@ -1,7 +1,6 @@
 from rest_framework.decorators import api_view
 from rest_framework.response import Response
-from .models import Purchase
-from apps.products.models import Product
+from apps.products.models import Product, Purchase
 from apps.products.serializers import ProductSerializer
 from django.db.models import Count
 

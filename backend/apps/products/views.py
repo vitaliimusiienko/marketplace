@@ -28,20 +28,20 @@ class CategoryListView(generics.ListAPIView):
     serializer_class = CategorySerializer
     
 @api_view(['POST'])
-@method_decorator(login_required, name='dispatch')
-def buy_product(request, product_id):
+def purchase_product(request):
+    user = request.user
+    product_id = request.data.get('product_id')
+    quantity = request.data.get('quantity')
+
+    if not product_id or not quantity:
+        return Response({'error': 'Product ID and quantity are required'}, status=status.HTTP_400_BAD_REQUEST)
+
     try:
-        user = request.user
         product = Product.objects.get(id=product_id)
-
-        if product.stock <= 0:
-            return Response({'error': 'Product out of stock'}, status=status.HTTP_400_BAD_REQUEST)
-
-        product.stock -= 1
-        product.save()
-
-        return Response({'message': 'Purchase successful'}, status=status.HTTP_200_OK)
     except Product.DoesNotExist:
         return Response({'error': 'Product not found'}, status=status.HTTP_404_NOT_FOUND)
-    except Exception as e:
-        return Response({'error': str(e)}, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
+
+    purchase = Purchase(user=user, product=product, quantity=quantity)
+    purchase.save()
+
+    return Response({'message': 'Purchase successful'}, status=status.HTTP_201_CREATED)
