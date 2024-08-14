@@ -22,6 +22,12 @@ class Product(models.Model):
     
     def __str__(self):
         return self.name
+      
+    def get_discounted_price(self):
+      if self.promotion and self.promotion.is_active():
+        discount_percentage = self.promotion.discount_percentage
+        return (self.price - (self.price * (discount_percentage / 100))).quantize(Decimal('0.01'))
+      return self.price
     
 class Purchase(models.Model):
   user = models.ForeignKey(CustomUser, related_name='purchases', on_delete=models.CASCADE)

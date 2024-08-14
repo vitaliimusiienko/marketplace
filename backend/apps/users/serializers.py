@@ -3,38 +3,30 @@ from django.contrib.auth.password_validation import validate_password
 from rest_framework.validators import UniqueValidator
 from .models import CustomUser, SellerProfile
 from apps.reviews.serializers import SellerReviewSerializer
+from rest_framework_simplejwt.tokens import RefreshToken
 
 class RegisterSerializer(serializers.ModelSerializer):
-    email = serializers.EmailField(
-        required=True,
-        validators=[UniqueValidator(queryset=CustomUser.objects.all())]
-    )
-    password = serializers.CharField(write_only=True, required=True, validators=[validate_password])
-    password2 = serializers.CharField(write_only=True, required=True)
+    password = serializers.CharField(write_only=True)
 
     class Meta:
         model = CustomUser
-        fields = ('username', 'password', 'password2', 'email', 'first_name', 'last_name')
-        extra_kwargs = {
-            'first_name': {'required': True},
-            'last_name': {'required': True}
-        }
+        fields = ['username', 'email', 'password']
+        
 
-    def validate(self, attrs):
-        if attrs['password'] != attrs['password2']:
-            raise serializers.ValidationError({"password": "Password fields didn't match."})
-        return attrs
-
-    def create(self, validated_data):
-        user = CustomUser.objects.create(
+    def create(self, validated_data):     
+        user = CustomUser.objects.create_user(
             username=validated_data['username'],
             email=validated_data['email'],
-            first_name=validated_data['first_name'],
-            last_name=validated_data['last_name']
+            password=validated_data['password']
         )
-        user.set_password(validated_data['password'])
-        user.save()
         return user
+
+    def to_representation(self, instance):
+        data = super().to_representation(instance)
+        refresh = RefreshToken.for_user(instance)
+        data['refresh'] = str(refresh)
+        data['access'] = str(refresh.access_token)
+        return data
 
 class CustomUserSerializer(serializers.ModelSerializer):
     class Meta:

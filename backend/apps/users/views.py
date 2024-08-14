@@ -1,7 +1,7 @@
 from rest_framework import generics, permissions, status, viewsets
 from rest_framework.views import APIView
 from rest_framework.response import Response
-from rest_framework.decorators import api_view
+from rest_framework.decorators import api_view, permission_classes
 from rest_framework.authtoken.models import Token
 from rest_framework.authentication import TokenAuthentication
 from rest_framework.permissions import IsAuthenticated
@@ -10,6 +10,7 @@ from .models import CustomUser, SellerProfile
 from .serializers import CustomUserSerializer, RegisterSerializer, LoginSerializer
 from rest_framework_simplejwt.tokens import RefreshToken
 
+@permission_classes(['AllowAny'])
 @api_view(['POST'])
 def register_user(request):
     serializer = RegisterSerializer(data=request.data)
@@ -24,13 +25,14 @@ def register_user(request):
             'refresh': str(refresh),
             'access': access_token
         }, status=201)
-    return Response(serializer.errors, status=400)
+    else:
+        return Response(serializer.errors, status=400)
 
 @api_view(['POST'])
 def login_user(request):
     username = request.data.get('username')
     password = request.data.get('password')
-    user = authenticate(username=username, password=password)
+    user = authenticate(request, username=username, password=password)
 
     if user is not None:
         refresh = RefreshToken.for_user(user)

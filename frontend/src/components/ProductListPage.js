@@ -1,14 +1,19 @@
 import React, { useState, useEffect } from 'react';
+import { useSearchParams, Link } from 'react-router-dom';
 import axios from 'axios';
 import '../styles/ProductListPage.css';
 
 function ProductListPage() {
+  const [searchParams] = useSearchParams();
+  const categoryId = searchParams.get('category');
   const [products, setProducts] = useState([]);
 
   useEffect(() => {
     const fetchProducts = async () => {
       try {
-        const response = await axios.get('http://localhost:8000/api/products/');
+        const response = await axios.get('http://localhost:8000/api/products/', {
+          params: { category: categoryId }
+        });
         setProducts(response.data);
       } catch (error) {
         console.error('Error fetching products:', error);
@@ -16,33 +21,25 @@ function ProductListPage() {
     };
 
     fetchProducts();
-  }, []);
+  }, [categoryId]);
 
   return (
     <div className="product-list-container">
-      <header className="product-list-header">
-        <div className="product-list-logo">Marketplace</div>
-      </header>
-      <main className="product-list-main">
-        <div className="product-list">
-          {products.map(product => (
-            <div key={product.id} className="product-card">
-              <img src={product.image} alt={product.name} className="product-image" />
-              <h3 className="product-title">{product.name}</h3>
-              <p className="product-description">{product.description}</p>
-              <p className="product-price">
-                ${product.discounted_price}
-                {product.discounted_price < product.price && <span className="original-price">${product.price}</span>}
-              </p>
+      <h2 className="product-list-title">Products</h2>
+      <div className="product-list">
+        {products.length > 0 ? (
+          products.map(product => (
+            <div key={product.id} className="product-item">
+              <h3>{product.name}</h3>
+              <p>{product.description}</p>
+              <p>${product.price}</p>
+              <Link to={`/products/${product.id}`} className="view-details-button">View Details</Link>
             </div>
-          ))}
-        </div>
-      </main>
-      <footer className="product-list-footer">
-        &copy; 2024 Marketplace
-      </footer>
+          ))
+        ) : (
+          <p>No products found for this category.</p>
+        )}
+      </div>
     </div>
   );
 }
-
-export default ProductListPage;

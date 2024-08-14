@@ -6,10 +6,8 @@ import '../styles/RegisterPage.css';
 const RegisterPage = () => {
     const [username, setUsername] = useState('');
     const [password, setPassword] = useState('');
-    const [confirmPassword, setConfirmPassword] = useState('');
+    const [password2, setConfirmPassword] = useState('');
     const [email, setEmail] = useState('');
-    const [firstName, setFirstName] = useState('');
-    const [lastName, setLastName] = useState('');
     const [error, setError] = useState('');
     const navigate = useNavigate();
 
@@ -17,7 +15,7 @@ const RegisterPage = () => {
         e.preventDefault();
         setError('');
 
-        if (password !== confirmPassword) {
+        if (password !== password2) {
             setError('Passwords do not match');
             return;
         }
@@ -27,14 +25,14 @@ const RegisterPage = () => {
                 username,
                 password,
                 email,
-                first_name: firstName,
-                last_name: lastName
             });
-            if (response.data.token) {
-                localStorage.setItem('token', response.data.token);
+            const token = response.data.access;
+            if (token) {
+                localStorage.setItem('token', token);
+                navigate('/');
+            } else {
+                console.error('No token returned from registration');
             }
-            
-            navigate('/');
         } catch (error) {
             const errMessage = error.response?.data?.detail || 'Registration failed. Please check your data and try again.';
             setError(errMessage);
@@ -45,6 +43,7 @@ const RegisterPage = () => {
         <div className="register-container">
             <h2>Register</h2>
             <form onSubmit={handleRegister} className="register-form">
+                {/* Fields for registration */}
                 <div>
                     <label>Username:</label>
                     <input
@@ -64,24 +63,6 @@ const RegisterPage = () => {
                     />
                 </div>
                 <div>
-                    <label>First Name:</label>
-                    <input
-                        type="text"
-                        value={firstName}
-                        onChange={(e) => setFirstName(e.target.value)}
-                        required
-                    />
-                </div>
-                <div>
-                    <label>Last Name:</label>
-                    <input
-                        type="text"
-                        value={lastName}
-                        onChange={(e) => setLastName(e.target.value)}
-                        required
-                    />
-                </div>
-                <div>
                     <label>Password:</label>
                     <input
                         type="password"
@@ -94,7 +75,7 @@ const RegisterPage = () => {
                     <label>Confirm Password:</label>
                     <input
                         type="password"
-                        value={confirmPassword}
+                        value={password2}
                         onChange={(e) => setConfirmPassword(e.target.value)}
                         required
                     />

@@ -12,7 +12,12 @@ function LoginPage() {
     e.preventDefault();
     try {
       const response = await axios.post('http://localhost:8000/api/login/', { username, password });
-      localStorage.setItem('token', response.data.token);
+      const token = response.data.access;
+        if (token) {
+          localStorage.setItem('token', token)
+        } else {
+          console.error('No token returned from login');
+        }
       navigate('/');
     } catch (error) {
       console.error('There was an error!', error);

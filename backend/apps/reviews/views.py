@@ -3,9 +3,10 @@ from rest_framework.decorators import api_view
 from rest_framework.response import Response
 from .models import ProductReview
 from apps.products.models import Product
-from .serializers import SellerReviewSerializer
+from .serializers import SellerReviewSerializer, ProductReviewSerializer
 
 class ProductReviewListCreateView(generics.ListCreateAPIView):
+    serializer_class = ProductReviewSerializer
     def get_queryset(self):
         product_id = self.kwargs['product_id']
         return ProductReview.objects.filter(product_id=product_id).order_by('-created_at')
