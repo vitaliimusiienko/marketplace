@@ -17,13 +17,12 @@ def register_user(request):
     if serializer.is_valid():
         user = serializer.save()
         refresh = RefreshToken.for_user(user)
-        access_token = str(refresh.access_token)
 
         return Response({
             'message': 'User registered successfully',
             'user': CustomUserSerializer(user).data,
             'refresh': str(refresh),
-            'access': access_token
+            'access': str(refresh.access_token)
         }, status=201)
     else:
         return Response(serializer.errors, status=400)

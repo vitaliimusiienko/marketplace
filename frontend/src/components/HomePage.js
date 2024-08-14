@@ -1,4 +1,6 @@
 import React, { useState, useEffect } from 'react';
+import Header from './Header'
+import Footer from './Footer'
 import { Link } from 'react-router-dom';
 import axios from 'axios';
 import '../styles/HomePage.css';
@@ -23,32 +25,9 @@ function HomePage() {
     fetchCategories();
   }, []);
 
-  const handleLogout = () => {
-    localStorage.removeItem('token');
-    setIsAuthenticated(false);
-    window.location.reload();
-  };
-
   return (
     <div className="container">
-      <header>
-        <div className="header-logo">Marketplace</div>
-        <nav>
-          <ul>
-            {isAuthenticated ? (
-              <>
-                <li><Link to="/update" className="update-button">Update Info</Link></li>
-                <li><button onClick={handleLogout} className="logout-button">Logout</button></li>
-              </>
-            ) : (
-              <>
-                <li><Link to="/register">Register</Link></li>
-                <li><Link to="/login">Login</Link></li>
-              </>
-            )}
-          </ul>
-        </nav>
-      </header>
+      <Header isAuthenticated={isAuthenticated} />
       <main>
         <div className="categories">
           <h2 className="categories-title">Product Categories</h2>
@@ -68,9 +47,7 @@ function HomePage() {
           <Link to="/add-product" className="add-product-button">Add Product</Link>
         )}
       </main>
-      <footer>
-        &copy; 2024 Marketplace
-      </footer>
+      <Footer />
     </div>
   );
 }

@@ -2,6 +2,8 @@ import React, { useState, useEffect } from 'react';
 import { useParams } from 'react-router-dom';
 import axios from 'axios';
 import ReactStars from 'react-rating-stars-component';
+import Header from './Header';
+import Footer from './Footer';
 import '../styles/ProductDetailPage.css';
 
 function ProductDetailPage() {
@@ -17,8 +19,12 @@ function ProductDetailPage() {
     text: ''
   });
   const [reviewSubmitted, setReviewSubmitted] = useState(false);
+  const [isAuthenticated, setIsAuthenticated] = useState(false);
 
   useEffect(() => {
+    const token = localStorage.getItem('token');
+    setIsAuthenticated(!!token);
+
     const fetchProduct = async () => {
       try {
         const response = await axios.get(`http://localhost:8000/api/products/${productId}/`);
@@ -121,9 +127,7 @@ function ProductDetailPage() {
 
   return (
     <div className="product-detail-container">
-      <header className="product-detail-header">
-        <div className="product-detail-logo">Marketplace</div>
-      </header>
+      <Header isAuthenticated={isAuthenticated} />
       <main className="product-detail-main">
         {product ? (
           <div className="product-detail-card">
@@ -207,9 +211,7 @@ function ProductDetailPage() {
           <p>Loading product details...</p>
         )}
       </main>
-      <footer className="product-detail-footer">
-        &copy; 2024 Marketplace
-      </footer>
+      <Footer />
     </div>
   );
 }
