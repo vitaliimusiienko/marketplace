@@ -1,6 +1,8 @@
 from django.db import models
+from django.utils.crypto import get_random_string
 from apps.users.models import SellerProfile, CustomUser
 from apps.promotions.models import Promotion
+from decimal import Decimal
    
 class Category(models.Model):
     name = models.CharField(max_length=255)
@@ -15,7 +17,7 @@ class Product(models.Model):
     price = models.DecimalField(max_digits=10, decimal_places=2)
     promotion = models.ForeignKey(Promotion, on_delete=models.SET_NULL, null=True, blank=True)
     category = models.ForeignKey(Category, on_delete=models.SET_NULL, null=True, blank=True)
-    article = models.IntegerField(default=0)
+    article = models.CharField(max_length=20, unique=True, blank=True, editable=False)
     image = models.ImageField(upload_to='products/', null=True, blank=True)
     created_at = models.DateTimeField(auto_now_add=True)
     updated_at = models.DateTimeField(auto_now=True)
@@ -28,6 +30,16 @@ class Product(models.Model):
         discount_percentage = self.promotion.discount_percentage
         return (self.price - (self.price * (discount_percentage / 100))).quantize(Decimal('0.01'))
       return self.price
+    
+    def save(self, *args, **kwargs):
+      if not self.article:
+        self.article = self.generate_unique_article()
+        super().save(*args, **kwargs)
+        
+    def generate_unique_article():
+      prefix = 'ART'
+      unique_part = get_random_string(length=8, allowed_chars='0123456789')
+      return f'{prefix}{unique_part}'
     
 class Purchase(models.Model):
   user = models.ForeignKey(CustomUser, related_name='purchases', on_delete=models.CASCADE)

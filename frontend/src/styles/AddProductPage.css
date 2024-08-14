@@ -1,70 +1,79 @@
 .add-product-container {
+    background-color: #333;
+    color: #f0f0f0;
+    font-family: Arial, sans-serif;
+    min-height: 100vh;
     display: flex;
     flex-direction: column;
-    align-items: center;
-    justify-content: center;
-    height: 100vh;
-    background-color: #121212;
-    color: #e0e0e0;
-    font-family: 'Arial', sans-serif;
-}
+  }
+  
+  main {
+    flex: 1;
+    display: flex;
+    padding: 20px;
+    max-width: 800px;
+    margin: 0 auto;
+  }
 
-.add-product-form {
-    background-color: #1e1e1e;
-    padding: 2rem;
-    border-radius: 8px;
-    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.3);
-    width: 100%;
-    max-width: 600px;
-}
-
-.add-product-form div {
-    margin-bottom: 1rem;
-}
-
-.add-product-form label {
-    display: block;
-    font-size: 1rem;
-    margin-bottom: 0.5rem;
-    color: #cccccc;
-}
-
-.add-product-form input,
-.add-product-form textarea,
-.add-product-form select {
-    width: 100%;
-    padding: 0.75rem;
+  .form-wrapper {
+    text-align: center;
+  }
+  
+  .form-title {
+    font-size: 24px;
+    margin-bottom: 20px;
+  }
+  
+  .add-product-form {
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+  }
+  
+  .add-product-form div {
+    display: flex;
+    flex-direction: column;
+  }
+  
+  .add-product-form label {
+    font-size: 16px;
+    margin-bottom: 5px;
+  }
+  
+  .add-product-form input,
+  .add-product-form textarea {
+    padding: 8px;
+    border: 1px solid #555;
     border-radius: 4px;
-    border: 1px solid #333;
-    background-color: #333;
-    color: #ffffff;
-    font-size: 1rem;
-}
-
-.add-product-form button {
-    width: 100%;
-    padding: 0.75rem;
-    border-radius: 4px;
+    background-color: #555;
+    color: #f0f0f0;
+  }
+  
+  .add-product-form input[type="file"] {
     border: none;
-    background-color: #6200ea;
-    color: #ffffff;
-    font-size: 1rem;
+    padding: 0;
+  }
+  
+  .add-product-form button {
+    padding: 10px 20px;
+    background-color: #555;
+    color: #f0f0f0;
+    border: none;
+    border-radius: 4px;
     cursor: pointer;
     transition: background-color 0.3s ease;
-}
-
-.add-product-form button:hover {
-    background-color: #3700b3;
-}
-
-.success {
-    color: green;
-    font-size: 1rem;
-    margin-top: 1rem;
-}
-
-.error {
-    color: red;
-    font-size: 1rem;
-    margin-top: 1rem;
-}
+  }
+  
+  .add-product-form button:hover {
+    background-color: #666;
+  }
+  
+  .error {
+    color: #ff0000;
+    text-align: center;
+  }
+  
+  .success {
+    color: #00ff00;
+    text-align: center;
+  }

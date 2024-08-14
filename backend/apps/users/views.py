@@ -1,13 +1,11 @@
-from rest_framework import generics, permissions, status, viewsets
+from rest_framework import generics, status
 from rest_framework.views import APIView
 from rest_framework.response import Response
 from rest_framework.decorators import api_view, permission_classes
-from rest_framework.authtoken.models import Token
-from rest_framework.authentication import TokenAuthentication
 from rest_framework.permissions import IsAuthenticated
 from django.contrib.auth import authenticate
-from .models import CustomUser, SellerProfile
-from .serializers import CustomUserSerializer, RegisterSerializer, LoginSerializer
+from .models import CustomUser
+from .serializers import CustomUserSerializer, RegisterSerializer
 from rest_framework_simplejwt.tokens import RefreshToken
 
 @permission_classes(['AllowAny'])
@@ -54,14 +52,16 @@ def logout_user(request):
     except Exception as e:
         return Response({'error': str(e)}, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
 
-class UserUpdateView(generics.UpdateAPIView):
-    queryset = CustomUser.objects.all()
-    serializer_class = CustomUserSerializer
-    permission_classes = [IsAuthenticated]
-
-    def get_object(self):
-        return self.request.user
+@api_view(['PUT'])
+def update_user(request):
+    user = request.user
+    serializer = CustomUserSerializer(user, data=request.data, partial=True)
+    if serializer.is_valid():
+        serializer.save()
+        return Response(serializer.data, status=status.HTTP_200_OK)
+    return Response(serializer.error, status=status.HTTP_400_BAD_REQUEST)
     
+
 class CurrentUserView(APIView):
     permission_classes = [IsAuthenticated]
     

@@ -1,11 +1,9 @@
 
 from rest_framework import generics, status
 from rest_framework.response import Response
-from rest_framework.decorators import action, api_view
+from rest_framework.decorators import api_view
 from rest_framework.permissions import AllowAny
-from django.contrib.auth.decorators import login_required
-from django.utils.decorators import method_decorator
-from .models import Product, Category
+from .models import Product, Category, Purchase
 from .serializers import ProductSerializer, CategorySerializer
 
 
@@ -26,6 +24,14 @@ class CategoryListView(generics.ListAPIView):
     permission_classes = [AllowAny]
     queryset = Category.objects.all()
     serializer_class = CategorySerializer
+    
+@api_view(['POST'])
+def create_product(request):
+    serializer = ProductSerializer
+    if serializer.is_valid(data=request.data):
+        product = serializer.save()
+        return Response(ProductSerializer(product).data, status=status.HTTP_201_CREATED)
+    return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
     
 @api_view(['POST'])
 def purchase_product(request):

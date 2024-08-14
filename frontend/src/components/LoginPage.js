@@ -1,5 +1,6 @@
 import React, { useState } from 'react';
 import axios from 'axios';
+import Footer from './Footer'
 import '../styles/LoginPage.css';
 import { useNavigate } from 'react-router-dom';
 
@@ -28,27 +29,28 @@ function LoginPage() {
   return (
     <div className="auth-container">
       <h2>Login</h2>
-      <form onSubmit={handleSubmit} className="auth-form">
-        <div>
-          <label>Username:</label>
-          <input 
-            type="text" 
-            value={username} 
-            onChange={(e) => setUsername(e.target.value)} 
-            required 
-          />
-        </div>
-        <div>
-          <label>Password:</label>
-          <input 
-            type="password" 
-            value={password} 
-            onChange={(e) => setPassword(e.target.value)} 
-            required 
-          />
-        </div>
-        <button type="submit">Login</button>
-      </form>
+        <form onSubmit={handleSubmit} className="auth-form">
+          <div>
+            <label>Username:</label>
+            <input 
+              type="text" 
+              value={username} 
+              onChange={(e) => setUsername(e.target.value)} 
+              required 
+            />
+          </div>
+          <div>
+            <label>Password:</label>
+            <input 
+              type="password" 
+              value={password} 
+              onChange={(e) => setPassword(e.target.value)} 
+              required 
+            />
+          </div>
+          <button type="submit">Login</button>
+        </form>
+      <Footer />
     </div>
   );
 }
