@@ -1,7 +1,7 @@
 from django.urls import path
-from .views import ProductReviewListCreateView, submit_seller_review
+from .views import ProductReviewListCreateView, SellerReviewListCreateView
 
 urlpatterns = [
     path('products/<int:product_id>/reviews/', ProductReviewListCreateView.as_view(), name='product-reviews'),
-    path('products/<int:product_id>/seller-reviews/', submit_seller_review, name='submit_seller_review')
+    path('products/<int:seller_id>/seller-reviews/', SellerReviewListCreateView.as_view(), name='submit_seller_review')
 ]

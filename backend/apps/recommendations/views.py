@@ -1,25 +1,18 @@
-from rest_framework.decorators import api_view
-from rest_framework.response import Response
+from rest_framework import viewsets
+from rest_framework.permissions import IsAuthenticated
 from apps.products.models import Product, Purchase
 from apps.products.serializers import ProductSerializer
-from django.db.models import Count
 
-@api_view(['GET'])
-def recommend_products(request):
-    user = request.user
-
-    purchased_products = Purchase.objects.filter(user=user).values_list('product', flat=True)
-
-    if not purchased_products:
-        return Response([], status=200)
-
-    recommendations = Product.objects.filter(
-        purchases__user__in=Purchase.objects.filter(product__in=purchased_products).values_list('user', flat=True)
-    ).exclude(id__in=purchased_products).distinct()
-
-    recommendations = recommendations.annotate(
-        purchase_count=Count('purchases')
-    ).order_by('-purchase_count')
-
-    serializer = ProductSerializer(recommendations, many=True)
-    return Response(serializer.data, status=200)
+class RecommendationViewSet(viewsets.ReadOnlyModelViewSet):
+    serializer_class = ProductSerializer
+    permission_classes = [IsAuthenticated]
+    
+    def get_queryset(self):
+        user = self.request.user
+        last_purchase = Purchase.objects.filter(user=user).order_by('purchased_at').first()
+        
+        if last_purchase:
+            category = last_purchase.product.category
+            
+            return Product.objects.filter(category=category).exclude(id=last_purchase.product.id)
+        return Product.objects.none()

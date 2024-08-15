@@ -1,6 +1,5 @@
 import React, { useState } from 'react';
 import axios from 'axios';
-import Footer from './Footer'
 import '../styles/LoginPage.css';
 import { useNavigate } from 'react-router-dom';
 
@@ -50,7 +49,6 @@ function LoginPage() {
           </div>
           <button type="submit">Login</button>
         </form>
-      <Footer />
     </div>
   );
 }

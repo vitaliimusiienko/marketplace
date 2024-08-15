@@ -34,13 +34,12 @@ def create_product(request):
     return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
     
 @api_view(['POST'])
-def purchase_product(request):
+def purchase_product(request, product_id):
     user = request.user
-    product_id = request.data.get('product_id')
     quantity = request.data.get('quantity')
 
-    if not product_id or not quantity:
-        return Response({'error': 'Product ID and quantity are required'}, status=status.HTTP_400_BAD_REQUEST)
+    if not quantity:
+        return Response({'error': 'Quantity is required'}, status=status.HTTP_400_BAD_REQUEST)
 
     try:
         product = Product.objects.get(id=product_id)
@@ -51,3 +50,11 @@ def purchase_product(request):
     purchase.save()
 
     return Response({'message': 'Purchase successful'}, status=status.HTTP_201_CREATED)
+
+class DiscountedProductListView(generics.ListAPIView):
+    serializer_class = ProductSerializer
+    
+    def get_queryset(self):
+        products_with_promotions = Product.objects.filter(promotion__isnull=False)
+        return [product for product in products_with_promotions if product.promotion.is_active()]
+    

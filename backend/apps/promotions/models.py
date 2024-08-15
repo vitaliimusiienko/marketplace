@@ -1,5 +1,5 @@
 from django.db import models
-from datetime import timezone
+from datetime import datetime, timezone
 
 class Promotion(models.Model):
   code = models.CharField(max_length=20, unique=True)
@@ -12,5 +12,5 @@ class Promotion(models.Model):
     return self.code
   
   def is_active(self):
-    now = timezone.now()
+    now = datetime.now(timezone.utc)
     return self.active and self.start_date <= now <= self.end_date

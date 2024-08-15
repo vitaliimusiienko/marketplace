@@ -9,10 +9,21 @@ function HomePage() {
   const [isAuthenticated, setIsAuthenticated] = useState(false);
   const [categories, setCategories] = useState([]);
   const [recommendedProducts, setRecommendedProducts] = useState([]);
+  const [discountedProducts, setDiscountedProducts] = useState([]);
   
   useEffect(() => {
     const token = localStorage.getItem('token');
     setIsAuthenticated(!!token);
+
+    const fetchDiscountedProducts = async () => {
+      try {
+        const response = await axios.get('http://localhost:8000/api/discounted-products/');
+        setDiscountedProducts(response.data);
+      } catch (error) {
+        console.error('Error fetching discounted products:', error);
+      }
+    };
+
 
     const fetchCategories = async () => {
       try {
@@ -34,6 +45,7 @@ function HomePage() {
       }
     };
 
+    fetchDiscountedProducts();
     fetchCategories();
     fetchRecommendedProducts();
   }, []);
@@ -41,44 +53,59 @@ function HomePage() {
   return (
     <div className="container">
       <Header isAuthenticated={isAuthenticated} />
-      <main>
-        <div className="content-wrapper">
-          <div className="categories">
-            <h2 className="categories-title">Product Categories</h2>
-            <div className="categories-list">
-              {categories.length > 0 ? (
+      <div className="layout">
+        <aside className="sidebar categories">
+          <h2>Categories</h2>
+          <div className="categories-list">
+            {categories.length > 0 ? (
               categories.map(category => (
-                  <Link key={category.id} to={`/products?category=${category.id}`}  className="category-button">
-                    {category.name}
-                  </Link>
-                ))
-              ) : (
-                <p>No categories available.</p>
-              )}
-           </div>
+                <Link key={category.id} to={`/products?category=${category.id}`} className="category-link">
+                  {category.name}
+                </Link>
+              ))
+            ) : (
+              <p>No categories available.</p>
+            )}
           </div>
-          <div className="recommended-products">
-            <h2 className="recommended-title">Top Products</h2>
-            <div className="recommended-list">
+        </aside>
+        <main className="main-content">
+          <div className="content-wrapper">
+            <div className="promotions">
+              <h2 className="promotions-title">Promotions</h2>
+              <div className='product-list'>
+                {discountedProducts.map(product => (
+                  <div key={product.id} className='product-card'>
+                    <Link to={`/products/${product.id}`}>
+                      <img src={product.image} alt={product.name} className='product-image' />
+                      <h3 className='product-name'>{product.name}</h3>
+                      <p className="product-price">${product.discounted_price}</p>
+                    </Link>
+                  </div>
+                ))}
+              </div>
+            </div>
+          </div>
+        </main>
+        <aside className="sidebar recommendations">
+          <h2>Recommended Products</h2>
+          <div className="recommendations-list">
             {recommendedProducts.length > 0 ? (
               recommendedProducts.map(product => (
                 <div key={product.id} className="product-card">
-                  <img src={product.image} alt={product.name} className="product-image" />
-                  <h3>{product.name}</h3>
-                  <p className="product-price">${product.discounted_price}</p>
-                </div>  
+                  <Link to={`/products/${product.id}`}>
+                    <img src={product.image} alt={product.name} className="product-image" />
+                    <h3 className='product-name'>{product.name}</h3>
+                    <p className="product-price">${product.discounted_price}</p>
+                  </Link>
+                </div>
               ))
             ) : (
-              <p>No recommendations available</p>
+              <p>No recommendations available.</p>
             )}
           </div>
-        </div>
+        </aside>
       </div>
-      {isAuthenticated && (
-        <Link to="/add-product" className="add-product-button">Add Product</Link>
-      )}
-    </main>
-    <Footer />
+      <Footer />
     </div>
   );
 }

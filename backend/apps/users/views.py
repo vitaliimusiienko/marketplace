@@ -52,7 +52,7 @@ def logout_user(request):
     except Exception as e:
         return Response({'error': str(e)}, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
 
-@api_view(['PUT'])
+@api_view(['PUT', 'GET'])
 def update_user(request):
     user = request.user
     serializer = CustomUserSerializer(user, data=request.data, partial=True)

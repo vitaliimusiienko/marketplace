@@ -9,14 +9,9 @@ import '../styles/ProductDetailPage.css';
 function ProductDetailPage() {
   const { productId } = useParams();
   const [product, setProduct] = useState(null);
-  const [currentUser, setCurrentUser] = useState('');
   const [newProductReview, setNewProductReview] = useState({
     rating: 0,
-    text: ''
-  });
-  const [newSellerReview, setNewSellerReview] = useState({
-    rating: 0,
-    text: ''
+    comment: ''
   });
   const [reviewSubmitted, setReviewSubmitted] = useState(false);
   const [isAuthenticated, setIsAuthenticated] = useState(false);
@@ -34,22 +29,7 @@ function ProductDetailPage() {
       }
     };
 
-    const fetchCurrentUser = async () => {
-      try {
-        const token = localStorage.getItem('token');
-        const response = await axios.get('http://localhost:8000/api/current-user/', {
-          headers: {
-            'Authorization': `Bearer ${token}`
-          }
-        });
-        setCurrentUser(response.data.username);
-      } catch (error) {
-        console.error('Error fetching current user:', error);
-      }
-    };
-
     fetchProduct();
-    fetchCurrentUser();
   }, [productId]);
 
   const handleProductReviewChange = (e) => {
@@ -60,68 +40,41 @@ function ProductDetailPage() {
     });
   };
 
-  const handleSellerReviewChange = (e) => {
-    const { name, value } = e.target;
-    setNewSellerReview({
-      ...newSellerReview,
-      [name]: value
-    });
-  };
-
   const handleProductReviewSubmit = async (e) => {
     e.preventDefault();
     try {
       const token = localStorage.getItem('token');
       await axios.post(`http://localhost:8000/api/products/${productId}/reviews/`, {
-        ...newProductReview,
-        author: currentUser
+        ...newProductReview
       }, {
         headers: {
           'Authorization': `Bearer ${token}`
         }
       });
-      setNewProductReview({ rating: 0, text: '' });
+      setNewProductReview({ rating: 0, comment: '' });
       const response = await axios.get(`http://localhost:8000/api/products/${productId}/`);
       setProduct(response.data);
+      setReviewSubmitted(true);
     } catch (error) {
       console.error('Error submitting product review:', error);
     }
   };
 
-  const handleSellerReviewSubmit = async (e) => {
-    e.preventDefault();
-    try {
-      const token = localStorage.getItem('token');
-      await axios.post(`http://localhost:8000/api/products/${productId}/seller-review/`, {
-        ...newSellerReview
-      }, {
-        headers: {
-          'Authorization': `Bearer ${token}`
-        }
-      });
-      setNewSellerReview({ rating: 0, text: '' });
-      setReviewSubmitted(true);
-    } catch (error) {
-      console.error('Error submitting seller review:', error);
-    }
-  };
-
   const handlePurchase = async () => {
     try {
-      const token = localStorage.getItem('token');
-      await axios.post(`http://localhost:8000/api/products/${productId}/purchase/`, {
-        product_id: productId,
-        quantity: 1
-      }, {
-        headers: {
-          'Authorization': `Bearer ${token}`
-        }
-      });
-      alert('Purchase successful! Please provide a review for the seller.');
-      setReviewSubmitted(false);
+        const token = localStorage.getItem('token');
+        await axios.post(`http://localhost:8000/api/products/${productId}/purchase/`, {
+            quantity: 1
+        }, {
+            headers: {
+                'Authorization': `Bearer ${token}`
+            }
+        });
+        alert('Purchase successful! Please provide a review for the seller.');
+        setReviewSubmitted(false);
     } catch (error) {
-      console.error('Error making purchase:', error);
-      alert('Purchase failed');
+        console.error('Error making purchase:', error);
+        alert('Purchase failed');
     }
   };
 
@@ -142,65 +95,39 @@ function ProductDetailPage() {
                 <ul className="review-list">
                   {product.reviews.map(review => (
                     <li key={review.id} className="review-item">
-                      <p><strong>{review.author}</strong> - {review.rating} stars</p>
-                      <p>{review.text}</p>
+                      <p><strong>{review.user}</strong> - {review.rating} stars</p>
+                      <p>{review.comment}</p>
                     </li>
                   ))}
                 </ul>
               ) : (
                 <p>No reviews for this product yet.</p>
               )}
-              {currentUser && !reviewSubmitted && (
-                <>
-                  <form onSubmit={handleProductReviewSubmit} className="review-form">
-                    <h4>Leave a Review for the Product</h4>
-                    <div className="form-group">
-                      <label htmlFor="productRating">Rating:</label>
-                      <ReactStars
-                        id="productRating"
-                        value={newProductReview.rating}
-                        onChange={(rating) => setNewProductReview(prev => ({ ...prev, rating }))}
-                        size={24}
-                        half={false}
-                      />
-                    </div>
-                    <div className="form-group">
-                      <label htmlFor="text">Review:</label>
-                      <textarea
-                        id="text"
-                        name="text"
-                        value={newProductReview.text}
-                        onChange={handleProductReviewChange}
-                        required
-                      />
-                    </div>
-                    <button type="submit" className="submit-review-button">Submit Product Review</button>
-                  </form>
-                  <form onSubmit={handleSellerReviewSubmit} className="review-form">
-                    <h4>Leave a Review for the Seller</h4>
-                    <div className="form-group">
-                      <label htmlFor="sellerRating">Rating:</label>
-                      <ReactStars
-                        id="sellerRating"
-                        value={newSellerReview.rating}
-                        onChange={(rating) => setNewSellerReview(prev => ({ ...prev, rating }))}
-                        size={24}
-                        half={false}
-                      />
-                    </div>
-                    <div className="form-group">
-                      <label htmlFor="text">Review:</label>
-                      <textarea
-                        id="text"
-                        name="text"
-                        value={newSellerReview.text}
-                        onChange={handleSellerReviewChange}
-                        required
-                      />
-                    </div>
-                    <button type="submit" className="submit-review-button">Submit Seller Review</button>
-                  </form>
-                </>
+              {isAuthenticated && !reviewSubmitted && (
+                <form onSubmit={handleProductReviewSubmit} className="review-form">
+                  <h4>Leave a Review for the Product</h4>
+                  <div className="form-group">
+                    <label htmlFor="productRating">Rating:</label>
+                    <ReactStars
+                      id="productRating"
+                      value={newProductReview.rating}
+                      onChange={(rating) => setNewProductReview(prev => ({ ...prev, rating }))}
+                      size={24}
+                      half={false}
+                    />
+                  </div>
+                  <div className="form-group">
+                    <label htmlFor="text">Review:</label>
+                    <textarea
+                      id="text"
+                      name="comment"
+                      value={newProductReview.comment}
+                      onChange={handleProductReviewChange}
+                      required
+                    />
+                  </div>
+                  <button type="submit" className="submit-review-button">Submit Product Review</button>
+                </form>
               )}
               {reviewSubmitted && (
                 <p>Thank you for your review!</p>

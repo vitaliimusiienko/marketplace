@@ -20,7 +20,7 @@ const UpdateUserPage = () => {
             try {
                 const token = localStorage.getItem('token');
                 setIsAuthenticated(!!token);
-                const response = await axios.get('http://localhost:8000/api/user/', {
+                const response = await axios.get('http://localhost:8000/api/update/', {
                     headers: { Authorization: `Bearer ${token}` }
                 });
                 const { username, email, first_name, last_name, bank_card } = response.data;
@@ -43,7 +43,7 @@ const UpdateUserPage = () => {
 
         try {
             const token = localStorage.getItem('token');
-            await axios.put('http://localhost:8000/api/update-user/', {
+            await axios.put('http://localhost:8000/api/update/', {
                 username,
                 email,
                 first_name: firstName,

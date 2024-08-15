@@ -27,16 +27,16 @@ class Product(models.Model):
       
     def get_discounted_price(self):
       if self.promotion and self.promotion.is_active():
-        discount_percentage = self.promotion.discount_percentage
-        return (self.price - (self.price * (discount_percentage / 100))).quantize(Decimal('0.01'))
+        discount_percentage = Decimal(self.promotion.discount_percentage)
+        return (self.price - (self.price * (discount_percentage / Decimal('100')))).quantize(Decimal('0.01'))
       return self.price
     
     def save(self, *args, **kwargs):
       if not self.article:
         self.article = self.generate_unique_article()
-        super().save(*args, **kwargs)
+      super().save(*args, **kwargs)
         
-    def generate_unique_article():
+    def generate_unique_article(self):
       prefix = 'ART'
       unique_part = get_random_string(length=8, allowed_chars='0123456789')
       return f'{prefix}{unique_part}'

@@ -13,11 +13,23 @@ const AddProductPage = () => {
   const [error, setError] = useState('');
   const [success, setSuccess] = useState('');
   const [isAuthenticated, setIsAuthenticated] = useState(false);
+  const [categories, setCategories] = useState([]);
 
   useEffect(() => {
     const token = localStorage.getItem('token');
     setIsAuthenticated(!!token);
   }, []);
+
+    const fetchCategories = async () => {
+      try {
+        const response = await axios.get('http://localhost:8000/api/categories/');
+        setCategories(response.data);
+      } catch (error) {
+        console.error('Error fetching categories:', error);
+      }
+  };
+
+  fetchCategories();
 
   const handleSubmit = async (e) => {
     e.preventDefault();
@@ -88,12 +100,14 @@ const AddProductPage = () => {
               </div>
               <div>
                 <label>Category:</label>
-                <input
-                  type="text"
-                  value={category}
-                  onChange={(e) => setCategory(e.target.value)}
-                  required
-                />
+                <select value={categories} onChange={(e) => setCategories(e.target.value)} required>
+                  <option value=''>Select Category</option>
+                  {categories.map((cat) => (
+                    <option key={cat.id} value={cat.id}>
+                      {cat.name}
+                    </option>
+                  ))}
+                </select>
               </div>
               <div>
                 <label>Image:</label>

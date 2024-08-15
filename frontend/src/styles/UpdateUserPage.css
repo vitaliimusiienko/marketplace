@@ -1,67 +1,76 @@
-html, body {
-	height: 100%;
-	margin: 0;
-	padding: 0;
-}
-
-.update-user-container {
-	display: flex;
-	flex-direction: column;
-	min-height: 100vh;
-	background-color: #333;
-	color: #f0f0f0;
-}
-
 main {
-	flex: 1;
-	display: flex;
-	justify-content: center;
-	align-items: center;
-	padding: 20px;
+  flex: 1 1;
+  padding: 2rem;
+  color: #e0e0e0;
+  justify-content: center;
+  align-items: center;
+}
+.update-user-container {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  height: 100vh;
+  color: #f0f0f0;
+  font-family: Arial, sans-serif;
+  padding: 20px;
+}
+
+.update-user-container h2 {
+  font-size: 24px;
+  margin-bottom: 20px;
+  color: #f0f0f0;
 }
 
 .update-user-form {
-	width: 100%;
-	max-width: 600px;
-	background-color: #333;
-	padding: 20px;
+  background-color: #444;
+  padding: 20px;
+  border-radius: 8px;
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.3);
+  width: 100%;
+  max-width: 500px;
 }
 
 .update-user-form div {
-	margin-bottom: 15px;
+  margin-bottom: 20px;
 }
 
 .update-user-form label {
-	display: block;
-	margin-bottom: 5px;
+  display: block;
+  font-size: 16px;
+  margin-bottom: 8px;
+  color: #cccccc;
 }
 
 .update-user-form input {
-	width: 100%;
-	padding: 8px;
-	border: 1px solid #555;
-	border-radius: 4px;
-	background-color: #444;
-	color: #f0f0f0;
+  width: 100%;
+  padding: 10px;
+  border-radius: 4px;
+  border: 1px solid #555;
+  background-color: #333;
+  color: #f0f0f0;
+  font-size: 16px;
+  box-sizing: border-box;
 }
 
 .update-user-form button {
-	display: block;
-	margin: 20px auto 0 auto;
-	padding: 10px 20px;
-	background-color: #555;
-	color: #f0f0f0;
-	border: none;
-	border-radius: 4px;
-	cursor: pointer;
-	transition: background-color 0.3s ease;
+  width: 100%;
+  padding: 12px;
+  border-radius: 4px;
+  border: none;
+  background-color: #6200ea;
+  color: #ffffff;
+  font-size: 16px;
+  cursor: pointer;
+  transition: background-color 0.3s ease;
 }
 
 .update-user-form button:hover {
-	background-color: #444;
+  background-color: #3700b3;
 }
 
-.error {
-	color: red;
-	margin-top: 10px;
+.update-user-form .error {
+  color: #ff4d4d;
+  font-size: 14px;
+  margin-top: 10px;
 }

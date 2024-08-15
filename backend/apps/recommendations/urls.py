@@ -1,6 +1,8 @@
 from django.urls import path
-from .views import recommend_products
+from .views import RecommendationViewSet
 
-urlpattern = [
-	path('recommendations/', recommend_products, name='recommend_products')
+recommended_product_list = RecommendationViewSet.as_view({'get': 'list'})
+
+urlpatterns = [
+	  path('recommendations/', recommended_product_list, name='recommended_product_list')
 ]
