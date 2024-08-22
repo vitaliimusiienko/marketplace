@@ -10,22 +10,17 @@ from .serializers import ProductSerializer, CategorySerializer
 class ProductViewsTests(TestCase):
     def setUp(self):
         self.client = APIClient()
-        
-        # Создаем админа для аутентификации
+
         self.admin_user = User.objects.create_superuser(username='admin', password='adminpass')
         self.client.force_authenticate(user=self.admin_user)
-        
-        # Создаем обычного пользователя для тестов
+
         self.user = CustomUser.objects.create_user(username='testuser', password='testpassword')
 
-        # Создаем профили продавца и категории
         self.seller_profile = SellerProfile.objects.create(user=self.admin_user)
         self.category = Category.objects.create(name='Electronics')
 
-        # Создаем промоакцию
         self.promotion = Promotion.objects.create(discount_percentage=20, is_active=True)
-        
-        # Создаем продукт
+
         self.product = Product.objects.create(
             name='Laptop',
             description='High performance laptop',
