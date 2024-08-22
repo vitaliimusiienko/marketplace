@@ -1,8 +1,8 @@
 
 from rest_framework import generics, status
 from rest_framework.response import Response
-from rest_framework.decorators import api_view
-from rest_framework.permissions import AllowAny
+from rest_framework.decorators import api_view, permission_classes
+from rest_framework.permissions import AllowAny, IsAdminUser
 from .models import Product, Category, Purchase
 from .serializers import ProductSerializer, CategorySerializer
 
@@ -26,9 +26,10 @@ class CategoryListView(generics.ListAPIView):
     serializer_class = CategorySerializer
     
 @api_view(['POST'])
+@permission_classes([IsAdminUser])
 def create_product(request):
-    serializer = ProductSerializer
-    if serializer.is_valid(data=request.data):
+    serializer = ProductSerializer(data=request.data)
+    if serializer.is_valid():
         product = serializer.save()
         return Response(ProductSerializer(product).data, status=status.HTTP_201_CREATED)
     return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)

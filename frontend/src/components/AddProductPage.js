@@ -9,27 +9,27 @@ const AddProductPage = () => {
   const [description, setDescription] = useState('');
   const [price, setPrice] = useState('');
   const [category, setCategory] = useState('');
+  const [categories, setCategories] = useState([]);
   const [image, setImage] = useState(null);
   const [error, setError] = useState('');
   const [success, setSuccess] = useState('');
   const [isAuthenticated, setIsAuthenticated] = useState(false);
-  const [categories, setCategories] = useState([]);
 
   useEffect(() => {
     const token = localStorage.getItem('token');
     setIsAuthenticated(!!token);
-  }, []);
 
-    const fetchCategories = async () => {
+    const fetchCategory = async () => {
       try {
         const response = await axios.get('http://localhost:8000/api/categories/');
         setCategories(response.data);
       } catch (error) {
-        console.error('Error fetching categories:', error);
+        console.error('Error fetching category:', error);
       }
-  };
+    };
 
-  fetchCategories();
+    fetchCategory();
+  }, []);
 
   const handleSubmit = async (e) => {
     e.preventDefault();
@@ -49,7 +49,7 @@ const AddProductPage = () => {
       await axios.post('http://localhost:8000/api/products/create/', formData, {
         headers: {
           'Content-Type': 'multipart/form-data',
-          'Authorization': `Token ${localStorage.getItem('token')}`  
+          'Authorization': `Token ${localStorage.getItem('token')}`
         }
       });
       setSuccess('Product added successfully!');
@@ -70,52 +70,52 @@ const AddProductPage = () => {
       <main>
         <div className='form-wrapper'>
           <h2 className='form-title'>Add New Product</h2>
-            <form onSubmit={handleSubmit} className="add-product-form">
-              <div>
-                <label>Name:</label>
-                <input
-                  type="text"
-                  value={name}
-                  onChange={(e) => setName(e.target.value)}
-                  required
-                />
-              </div>
-              <div>
-                <label>Description:</label>
-                <textarea
-                  value={description}
-                  onChange={(e) => setDescription(e.target.value)}
-                  required
-                />
-              </div>
-              <div>
-                <label>Price:</label>
-                <input
-                  type="number"
-                  step="0.01"
-                  value={price}
-                  onChange={(e) => setPrice(e.target.value)}
-                  required
-                />
-              </div>
-              <div>
-                <label>Category:</label>
-                <select value={categories} onChange={(e) => setCategories(e.target.value)} required>
-                  <option value=''>Select Category</option>
-                  {categories.map((cat) => (
-                    <option key={cat.id} value={cat.id}>
-                      {cat.name}
-                    </option>
-                  ))}
-                </select>
-              </div>
-              <div>
-                <label>Image:</label>
-                <input
-                  type="file"
-                  onChange={(e) => setImage(e.target.files[0])}
-                />
-              </div>
+          <form onSubmit={handleSubmit} className="add-product-form">
+            <div>
+              <label>Name:</label>
+              <input
+                type="text"
+                value={name}
+                onChange={(e) => setName(e.target.value)}
+                required
+              />
+            </div>
+            <div>
+              <label>Description:</label>
+              <textarea
+                value={description}
+                onChange={(e) => setDescription(e.target.value)}
+                required
+              />
+            </div>
+            <div>
+              <label>Price:</label>
+              <input
+                type="number"
+                step="0.01"
+                value={price}
+                onChange={(e) => setPrice(e.target.value)}
+                required
+              />
+            </div>
+            <div>
+              <label>Category:</label>
+              <select value={category} onChange={(e) => setCategory(e.target.value)} required>
+                <option value=''>Select Category</option>
+                {categories.map((cat) => (
+                  <option key={cat.id} value={cat.id}>
+                    {cat.name}
+                  </option>
+                ))}
+              </select>
+            </div>
+            <div>
+              <label>Image:</label>
+              <input
+                type="file"
+                onChange={(e) => setImage(e.target.files[0])}
+              />
+            </div>
             {error && <p className="error">{error}</p>}
             {success && <p className="success">{success}</p>}
             <button type="submit">Add Product</button>

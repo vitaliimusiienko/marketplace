@@ -60,12 +60,3 @@ def update_user(request):
         serializer.save()
         return Response(serializer.data, status=status.HTTP_200_OK)
     return Response(serializer.error, status=status.HTTP_400_BAD_REQUEST)
-    
-
-class CurrentUserView(APIView):
-    permission_classes = [IsAuthenticated]
-    
-    def get(self, request):
-        user = request.user
-        serializer = CustomUserSerializer(user)
-        return Response(serializer.data)

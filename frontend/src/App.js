@@ -6,7 +6,6 @@ import RegisterPage from './components/RegisterPage';
 import ProductListPage from './components/ProductListPage';
 import AddProductPage from './components/AddProductPage';
 import ProductDetailPage from './components/ProductDetailPage';
-import RecommendationListPage from './components/RecommendationListPage';
 import UpdateUserPage from './components/UpdateUserPage';
 
 function App() {
@@ -18,8 +17,7 @@ function App() {
         <Route path="/register" element={<RegisterPage />} />
         <Route path="/products" element={<ProductListPage />} />
         <Route path="/add-product" element={<AddProductPage />} />
-        <Route path="/products/:productId" element={<ProductDetailPage />} />
-        <Route path="/recommendations" element={<RecommendationListPage />} /> 
+        <Route path="/products/:productId" element={<ProductDetailPage />} /> 
         <Route path="/update-user" element={<UpdateUserPage />} />
       </Routes>
     </Router>
